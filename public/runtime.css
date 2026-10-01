@@ -516,3 +516,107 @@
   border-left: 3px solid #8b5cf6;
   background: linear-gradient(to right, #faf5ff, #ffffff);
 }
+
+/* ========================================================
+   모바일 반응형 최적화 (@media max-width: 768px)
+   ======================================================== */
+@media (max-width: 768px) {
+  /* 1. 플로팅 헬프 버튼 모바일 최적화 */
+  #dap-help-button {
+    bottom: 18px;
+    right: 18px;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    justify-content: center;
+    gap: 0;
+  }
+
+  #dap-help-button > span:not(.help-icon) {
+    display: none;
+  }
+
+  #dap-help-button .help-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 1rem;
+  }
+
+  /* 2. 가이드 센터 모달 모바일 최적화 */
+  #dap-runtime-modal,
+  .dap-runtime-modal {
+    width: 92vw;
+    max-width: 480px;
+    max-height: 85vh;
+    border-radius: 14px;
+  }
+
+  .dap-modal-body {
+    max-height: calc(85vh - 130px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .dap-modal-close-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .btn-reset-history {
+    min-height: 44px;
+    padding: 10px 14px;
+    width: 100%;
+  }
+
+  /* 3. What's New 팝업 모달 모바일 최적화 */
+  .dap-whatsnew-modal {
+    width: 92vw;
+    max-width: 460px;
+    max-height: 88vh;
+    border-radius: 16px;
+  }
+
+  .dap-whatsnew-body {
+    max-height: calc(88vh - 150px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+  }
+
+  .dap-whatsnew-footer {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+
+  .dap-whatsnew-btn-dismiss,
+  .dap-whatsnew-btn-start {
+    min-height: 44px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* 4. Driver.js 팝오버 모바일 뷰 최적화 */
+  .driver-popover {
+    max-width: min(340px, 88vw) !important;
+    padding: 14px !important;
+    border-radius: 12px !important;
+  }
+
+  .driver-popover-title {
+    font-size: 1.05rem !important;
+  }
+
+  .driver-popover-description {
+    font-size: 0.88rem !important;
+    line-height: 1.5 !important;
+  }
+
+  .driver-popover-footer button {
+    min-height: 40px !important;
+    padding: 8px 14px !important;
+    font-size: 0.85rem !important;
+  }
+}
