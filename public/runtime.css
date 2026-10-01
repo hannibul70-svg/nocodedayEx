@@ -713,3 +713,28 @@
     min-height: 28px;
   }
 }
+
+/* ========================================================
+   한글 타이포그래피 및 줄바꿈(Line Break) 보정 규칙
+   ======================================================== */
+.driver-popover-title {
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.4 !important;
+}
+
+.driver-popover-description {
+  white-space: pre-line !important;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+  line-height: 1.6 !important;
+}
+
+.dap-whatsnew-desc,
+.dap-whatsnew-step-desc,
+.dap-tour-desc {
+  white-space: pre-line !important;
+  word-break: keep-all !important;
+  overflow-wrap: break-word !important;
+}
+

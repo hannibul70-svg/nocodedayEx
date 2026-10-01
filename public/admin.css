@@ -87,6 +87,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 input, button, select, textarea {
@@ -102,6 +104,10 @@ a {
 
 table {
   border-collapse: collapse;
+}
+
+table th, table td {
+  word-break: keep-all;
 }
 
 svg {

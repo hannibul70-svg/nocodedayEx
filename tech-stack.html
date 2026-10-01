@@ -43,6 +43,8 @@
       color: var(--slate-800);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
     /* 상단 헤더 */
@@ -247,6 +249,34 @@
       margin: -6px 0;
       letter-spacing: 0.05em;
     }
+    .arch-meta-line {
+      margin-bottom: 8px;
+      color: #cbd5e1;
+      font-size: 0.83rem;
+    }
+    .arch-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .arch-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      line-height: 1.5;
+      font-size: 0.82rem;
+      color: #94a3b8;
+      word-break: keep-all;
+    }
+    .arch-list li::before {
+      content: "•";
+      color: #60a5fa;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
 
     /* 기술 스택 카드 */
     .tech-card {
@@ -274,6 +304,7 @@
       font-size: 1.08rem;
       font-weight: 700;
       color: var(--slate-900);
+      word-break: keep-all;
     }
     .tech-badge {
       font-size: 0.72rem;
@@ -281,12 +312,14 @@
       padding: 3px 8px;
       border-radius: 6px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
     .tech-desc {
       font-size: 0.86rem;
       color: var(--slate-600);
       margin-bottom: 12px;
-      line-height: 1.5;
+      line-height: 1.55;
+      word-break: keep-all;
     }
     .tech-features {
       list-style: none;
@@ -302,11 +335,13 @@
       display: flex;
       align-items: flex-start;
       gap: 6px;
+      word-break: keep-all;
     }
     .tech-features li::before {
       content: "•";
       color: var(--primary);
       font-weight: bold;
+      flex-shrink: 0;
     }
 
     /* 뱃지 색상 */
@@ -328,6 +363,8 @@
       padding: 12px 16px;
       border: 1px solid var(--slate-200);
       text-align: left;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
     .spec-table th {
       background-color: var(--slate-100);
@@ -335,6 +372,8 @@
       font-weight: 700;
       font-size: 0.82rem;
       text-transform: uppercase;
+      word-break: keep-all;
+      white-space: nowrap;
     }
     .spec-table tr:hover {
       background-color: var(--slate-50);
@@ -359,6 +398,7 @@
       overflow-x: auto;
       margin-top: 12px;
       line-height: 1.55;
+      white-space: pre;
     }
     .code-box .keyword { color: #f43f5e; }
     .code-box .string { color: #10b981; }
@@ -455,10 +495,12 @@
         <div class="arch-box highlight">
           <div class="arch-box-title"><span>👑 Tier 1.</span> 독립 운영 관제 포털 (Vanilla JS SPA Admin Console)</div>
           <div class="arch-box-desc">
-            경로: <code>http://localhost:3050/admin</code> (admin.html, admin.css)<br>
-            - <strong>Vanilla JS SPA (바닐라 자바스크립트 기반 무프레임워크 SPA)</strong>: React, Vue 등 무거운 외부 프레임워크 종속 없이 순수 브라우저 표준 기술로 구현된 초경량 단일 페이지 애플리케이션.<br>
-            - <strong>Zero-CDN 순수 로컬 스타일링</strong>: 사내 폐쇄망 100% 호환, 외부 의존성 없음, 번개 SVG 파비콘 (Zero 404)<br>
-            - <strong>주요 관제 기능</strong>: 연동 시스템(App ID)별 가이드 중앙 제어, KPI 모니터링, 가이드 마스터 테이블, 스텝 상세 조회, 1-Click 임베드 발급 및 북마클릿 제공.
+            <div class="arch-meta-line">접속 경로: <code>http://localhost:3050/admin</code> (admin.html, admin.css)</div>
+            <ul class="arch-list">
+              <li><strong>Vanilla JS SPA</strong>: React, Vue 등 무거운 외부 프레임워크 종속 없이 순수 브라우저 표준 기술로 구현된 초경량 단일 페이지 애플리케이션.</li>
+              <li><strong>Zero-CDN 순수 로컬 스타일링</strong>: 사내 폐쇄망 100% 호환, 외부 의존성 없음, 번개 SVG 파비콘 (Zero 404).</li>
+              <li><strong>주요 관제 기능</strong>: 연동 시스템(App ID)별 가이드 중앙 제어, KPI 모니터링, 가이드 마스터 테이블, 스텝 상세 조회, 1-Click 임베드 발급 및 북마클릿 제공.</li>
+            </ul>
           </div>
         </div>
 
@@ -468,10 +510,12 @@
         <div class="arch-box">
           <div class="arch-box-title"><span>⚡ Tier 2.</span> 백엔드 고속 인덱싱 엔진 (Backend & Storage)</div>
           <div class="arch-box-desc">
-            런타임: Node.js (v24.x LTS 호환), Express 4.19 + Node.js 네이티브 HTTP 듀얼 Fallback 서버<br>
-            스토리지: SQLite3 파일 기반 RDBMS (<code>data/dap.db</code>) - Node 22.5+ 내장 <code>node:sqlite</code> C++ 네이티브 바인딩<br>
-            - 시스템/URL 복합 인덱스(<code>idx_tours_app_url</code>)로 수만 개 가이드 중 현재 URL 가이드만 <strong>1ms 내 초고속 핀포인트 쿼리</strong><br>
-            - ACID 트랜잭션 동시성 보장 및 <code>tours.json</code> 부팅 시 무손실 자동 마이그레이션.
+            <div class="arch-meta-line">런타임: Node.js (v24.x LTS 호환), Express 4.19 + Node.js 네이티브 HTTP 듀얼 Fallback 서버</div>
+            <div class="arch-meta-line">스토리지: SQLite3 파일 기반 RDBMS (<code>data/dap.db</code>) - Node 22.5+ 내장 <code>node:sqlite</code> C++ 네이티브 바인딩</div>
+            <ul class="arch-list">
+              <li><strong>초고속 핀포인트 쿼리</strong>: 복합 인덱스(<code>idx_tours_app_url</code>)로 수만 개 가이드 중 현재 URL 가이드만 1ms 내 즉각 반환.</li>
+              <li><strong>데이터 무결성</strong>: ACID 트랜잭션 동시성 보장 및 <code>tours.json</code> 부팅 시 무손실 자동 마이그레이션.</li>
+            </ul>
           </div>
         </div>
 
@@ -482,20 +526,24 @@
           <div class="arch-box">
             <div class="arch-box-title"><span>🎯 Tier 3.</span> 클라이언트 임베드 런타임 (Runtime Engine)</div>
             <div class="arch-box-desc">
-              파일: <code>runtime.js</code>, <code>runtime.css</code>, Driver.js v1.3.1<br>
-              - <strong>풍선 도움말 투명도 슬라이더</strong>: 20%~100% 실시간 조절 및 LocalStorage 기억<br>
-              - <strong>[👁️ 비침] 원클릭 퀵 투시 버튼</strong>: 가려진 화면 데이터를 누르는 동안 0.15로 투시<br>
-              - <strong>What's New 1회 자동 팝업</strong>: 신규 배포 시 모달 안내 후 둘러보기 연계<br>
-              - <strong>모바일 터치 최적화</strong>: 48px 원형 플로팅 헬프 버튼, 92vw 반응형 팝오버.
+              <div class="arch-meta-line">엔진 파일: <code>runtime.js</code>, <code>runtime.css</code>, Driver.js v1.3.1</div>
+              <ul class="arch-list">
+                <li><strong>풍선 도움말 투명도 슬라이더</strong>: 20%~100% 실시간 조절 및 LocalStorage 기억.</li>
+                <li><strong>[👁️ 비침] 원클릭 퀵 투시 버튼</strong>: 가려진 화면 데이터를 누르는 동안 0.15로 투시.</li>
+                <li><strong>What's New 1회 자동 팝업</strong>: 신규 배포 시 모달 안내 후 둘러보기 연계.</li>
+                <li><strong>모바일 터치 최적화</strong>: 48px 원형 플로팅 헬프 버튼, 92vw 반응형 팝오버.</li>
+              </ul>
             </div>
           </div>
           <div class="arch-box">
             <div class="arch-box-title"><span>🛠️ Tier 4.</span> 현장 노코드 저작 도구 (Authoring Studio)</div>
             <div class="arch-box-desc">
-              파일: <code>builder.js</code>, <code>builder.css</code>, Live Bookmarklet<br>
-              - <strong>스마트 CSS 셀렉터 자동 추론 엔진</strong>: 요소 클릭 시 안정적인 고유 경로 자동 추출<br>
-              - <strong>플로팅 드래그 저작 툴바</strong>: 작업 중 자유로운 위치 이동<br>
-              - <strong>현장 저작 북마클릿</strong>: 외부 ERP/포털 어디서나 브라우저 북마크 클릭으로 저작기 즉시 주입.
+              <div class="arch-meta-line">도구 파일: <code>builder.js</code>, <code>builder.css</code>, Live Bookmarklet</div>
+              <ul class="arch-list">
+                <li><strong>스마트 CSS 셀렉터 자동 추론 엔진</strong>: 요소 클릭 시 안정적인 고유 경로 자동 추출.</li>
+                <li><strong>플로팅 드래그 저작 툴바</strong>: 작업 중 자유로운 위치 이동.</li>
+                <li><strong>현장 저작 북마클릿</strong>: 외부 ERP/포털 어디서나 브라우저 북마크 클릭으로 저작기 즉시 주입.</li>
+              </ul>
             </div>
           </div>
         </div>
