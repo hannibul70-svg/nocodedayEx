@@ -41,6 +41,11 @@
 
   let toursCache = [];
   let currentDriver = null;
+  let popoverObserver = null;
+  let currentPopoverOpacity = parseFloat(localStorage.getItem('tour_popover_opacity') || '1.0');
+  if (isNaN(currentPopoverOpacity) || currentPopoverOpacity < 0.2 || currentPopoverOpacity > 1.0) {
+    currentPopoverOpacity = 1.0;
+  }
 
   // 초기화 (DOMContentLoaded 또는 이미 로드된 경우 즉시)
   function init() {
@@ -424,6 +429,10 @@
     }
 
     // 이전 투어가 실행 중이면 정리
+    if (popoverObserver) {
+      popoverObserver.disconnect();
+      popoverObserver = null;
+    }
     if (currentDriver && typeof currentDriver.destroy === 'function') {
       try { currentDriver.destroy(); } catch (e) {}
     }
@@ -441,6 +450,13 @@
     });
 
     try {
+      if (typeof MutationObserver !== 'undefined') {
+        popoverObserver = new MutationObserver(() => {
+          attachOpacityControl();
+        });
+        popoverObserver.observe(document.body, { childList: true, subtree: true });
+      }
+
       currentDriver = driverFactory({
         showProgress: true,
         animate: true,
@@ -448,11 +464,29 @@
         prevBtnText: '← 이전',
         doneBtnText: '완료 ✨',
         steps: steps,
+        onPopoverRender: (popover) => {
+          attachOpacityControl(popover);
+        },
+        onHighlightStarted: () => {
+          attachOpacityControl();
+          setTimeout(() => attachOpacityControl(), 0);
+        },
         onDestroyStarted: () => {
+          if (popoverObserver) {
+            popoverObserver.disconnect();
+            popoverObserver = null;
+          }
           if (currentDriver) {
             currentDriver.destroy();
             currentDriver = null;
           }
+        },
+        onDestroyed: () => {
+          if (popoverObserver) {
+            popoverObserver.disconnect();
+            popoverObserver = null;
+          }
+          currentDriver = null;
         }
       });
 
@@ -461,6 +495,80 @@
       console.error('[DAP Runtime] Error running Driver.js:', err);
       alert('가이드 투어 실행 중 오류가 발생했습니다: ' + err.message);
     }
+  }
+
+  function attachOpacityControl(popover) {
+    const wrapper = (popover && popover.wrapper) || document.querySelector('.driver-popover');
+    if (!wrapper) return;
+
+    // 현재 투명도 적용
+    wrapper.style.opacity = currentPopoverOpacity;
+    wrapper.style.transition = 'opacity 0.15s ease';
+
+    if (wrapper.querySelector('.dap-opacity-panel')) {
+      const slider = wrapper.querySelector('.dap-opacity-slider');
+      const valLabel = wrapper.querySelector('.dap-opacity-val');
+      if (slider && parseFloat(slider.value) !== currentPopoverOpacity) {
+        slider.value = currentPopoverOpacity;
+      }
+      if (valLabel) {
+        valLabel.textContent = `${Math.round(currentPopoverOpacity * 100)}%`;
+      }
+      return;
+    }
+
+    const panel = document.createElement('div');
+    panel.className = 'dap-opacity-panel';
+    panel.innerHTML = `
+      <div class="dap-opacity-left">
+        <span class="dap-opacity-icon">🎚️</span>
+        <span class="dap-opacity-label">투명도</span>
+        <input type="range" class="dap-opacity-slider" min="0.2" max="1" step="0.05" value="${currentPopoverOpacity}">
+        <span class="dap-opacity-val">${Math.round(currentPopoverOpacity * 100)}%</span>
+      </div>
+      <button type="button" class="dap-btn-quick-peek" title="누르고 있으면 아래 화면이 투시됩니다">👁️ 비침</button>
+    `;
+
+    // 팝오버 내부 최상단(또는 타이틀 위)에 삽입
+    wrapper.insertBefore(panel, wrapper.firstChild);
+
+    const slider = panel.querySelector('.dap-opacity-slider');
+    const valLabel = panel.querySelector('.dap-opacity-val');
+    const peekBtn = panel.querySelector('.dap-btn-quick-peek');
+
+    // 슬라이더 변경 이벤트
+    slider.addEventListener('input', (e) => {
+      currentPopoverOpacity = parseFloat(e.target.value);
+      wrapper.style.opacity = currentPopoverOpacity;
+      valLabel.textContent = `${Math.round(currentPopoverOpacity * 100)}%`;
+    });
+
+    slider.addEventListener('change', () => {
+      try {
+        localStorage.setItem('tour_popover_opacity', currentPopoverOpacity.toString());
+      } catch (e) {}
+    });
+
+    // 퀵 비침 버튼 (누르고 있을 때 0.15로 투시, 떼면 복귀)
+    const activatePeek = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      wrapper.style.opacity = '0.15';
+      peekBtn.classList.add('active');
+    };
+    const deactivatePeek = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      wrapper.style.opacity = currentPopoverOpacity;
+      peekBtn.classList.remove('active');
+    };
+
+    peekBtn.addEventListener('mousedown', activatePeek);
+    peekBtn.addEventListener('mouseup', deactivatePeek);
+    peekBtn.addEventListener('mouseleave', deactivatePeek);
+    peekBtn.addEventListener('touchstart', activatePeek, { passive: false });
+    peekBtn.addEventListener('touchend', deactivatePeek, { passive: false });
+    peekBtn.addEventListener('touchcancel', deactivatePeek, { passive: false });
   }
 
   function escapeHtml(str) {
