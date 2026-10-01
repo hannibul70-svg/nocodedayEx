@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoCode DAP Admin Console - 엔터프라이즈 가이드 관리</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 커스텀 스크롤바 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- 1. 상단 글로벌 네비게이션 헤더 -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/30">
+          <span class="text-xl">⚡</span>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            NoCode DAP Admin Console
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">Enterprise</span>
+          </h1>
+          <p class="text-xs text-slate-400">인터랙티브 온보딩 & 시스템 가이드 중앙 관제 포털</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="btn-refresh" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-lg text-slate-200 bg-slate-800 hover:bg-slate-700 hover:text-white border border-slate-700 transition shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          새로고침
+        </button>
+
+        <a href="/" target="_blank" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-sm font-medium rounded-lg text-blue-300 bg-blue-950/60 hover:bg-blue-900 border border-blue-800/80 transition">
+          <span>샘플 대시보드 바로가기</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 본문 콘텐츠 -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- 2. 임베드 & 현장 저작 스튜디오 (Integration Studio Card) -->
+    <section class="bg-gradient-to-br from-white to-slate-50 border border-slate-200/80 rounded-2xl p-6 shadow-sm relative overflow-hidden">
+      <div class="absolute -right-12 -top-12 w-48 h-48 bg-blue-100/40 rounded-full blur-2xl pointer-events-none"></div>
+      
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-slate-100">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-blue-600 font-semibold text-sm uppercase tracking-wider">Integration Studio</span>
+            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-100 text-emerald-800">
+              ● Ready to Embed
+            </span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900 mt-1">임베드 스크립트 & 현장 저작 스튜디오</h2>
+          <p class="text-sm text-slate-500 mt-0.5">외부 웹 애플리케이션에 1줄 스크립트를 삽입하거나 북마클릿으로 즉시 현장 가이드를 저작하세요.</p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <label for="select-integration-app" class="text-xs font-semibold text-slate-600 whitespace-nowrap">대상 앱(App ID):</label>
+          <select id="select-integration-app" class="text-sm border border-slate-300 rounded-lg px-3 py-1.5 bg-white text-slate-700 font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-sm">
+            <option value="default">default</option>
+            <option value="enterprise-app">enterprise-app</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        <!-- 1-Click 임베드 코드 카드 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+                1-Click 런타임 임베드 태그
+              </span>
+              <span class="text-xs text-slate-400">타겟 웹앱 &lt;head&gt; 또는 &lt;body&gt; 삽입</span>
+            </div>
+            <div class="relative bg-slate-900 rounded-lg p-3 text-xs font-mono text-emerald-400 overflow-x-auto shadow-inner border border-slate-800">
+              <code id="code-embed-tag" class="block whitespace-pre select-all">&lt;script src="..." data-app-id="..." defer&gt;&lt;/script&gt;</code>
+            </div>
+          </div>
+          <div class="mt-4 flex items-center justify-between">
+            <span class="text-xs text-slate-500">배포된 앱에서 최종 사용자가 온보딩 가이드를 즉시 재생합니다.</span>
+            <button id="btn-copy-embed" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium transition shadow-sm active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+              </svg>
+              코드 복사
+            </button>
+          </div>
+        </div>
+
+        <!-- 현장 저작 북마클릿 (Live Bookmarklet) 카드 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between shadow-xs">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                </svg>
+                현장 저작 북마클릿 (Live Bookmarklet)
+              </span>
+              <span class="text-xs text-amber-600 font-medium bg-amber-50 px-2 py-0.5 rounded border border-amber-200">노코드 저작</span>
+            </div>
+            <p class="text-xs text-slate-600 mb-2.5">
+              아래 버튼을 브라우저 <strong>북마크바(Bookmarks Bar)</strong>로 드래그해 두세요. 가이드를 작성하려는 실제 타겟 화면에서 북마클릿을 클릭하면 화면 위에 현장 저작기가 즉시 주입됩니다!
+            </p>
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- 북마크바 드래그 링크 -->
+              <a id="link-bookmarklet" href="#" draggable="true" class="cursor-grab active:cursor-grabbing inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold text-xs shadow-md shadow-amber-500/20 hover:from-amber-600 hover:to-orange-600 border border-amber-400/50 transition">
+                <span>⭐ DAP 저작기 실행</span>
+                <span class="text-[10px] bg-white/20 px-1.5 py-0.5 rounded">북마크바로 드래그</span>
+              </a>
+              <button id="btn-copy-bookmarklet" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition active:scale-95">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                자바스크립트 코드 복사
+              </button>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+            <span>DAP 서버와 동일 출처 또는 CORS가 허용된 모든 페이지에서 작동합니다.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. KPI 통계 카드 그리드 -->
+    <section>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <!-- 1. 연동 앱 수 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">연동 시스템 (Apps)</p>
+            <h3 id="kpi-total-apps" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
+            <p id="kpi-apps-sub" class="text-xs text-slate-500 mt-1">등록된 독립 시스템</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+            📱
+          </div>
+        </div>
+
+        <!-- 2. 등록된 가이드(투어) 수 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">등록된 가이드 (Tours)</p>
+            <h3 id="kpi-total-tours" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
+            <p class="text-xs text-slate-500 mt-1">활성화된 인터랙티브 투어</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl">
+            🗺️
+          </div>
+        </div>
+
+        <!-- 3. 총 안내 단계(Steps) 수 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">총 안내 단계 (Steps)</p>
+            <h3 id="kpi-total-steps" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
+            <p class="text-xs text-slate-500 mt-1">설정된 모든 팝오버 스텝</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            🎯
+          </div>
+        </div>
+
+        <!-- 4. What's New 가이드 수 -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
+          <div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">신규 기능 공지 (What's New)</p>
+            <h3 id="kpi-whats-new-tours" class="text-3xl font-extrabold text-slate-900 mt-1">0</h3>
+            <p class="text-xs text-slate-500 mt-1">신규 릴리즈 안내 가이드</p>
+          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+            ✨
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 가이드 마스터 테이블 섹션 (필터, 검색, 마스터 테이블) -->
+    <section class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+      <!-- 툴바 및 필터 -->
+      <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <!-- 시스템(App) 필터 탭 -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0" id="app-filter-tabs">
+          <button data-app="all" class="app-tab-btn px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-slate-900 text-white shadow-xs">
+            전체 시스템
+          </button>
+          <!-- 동적 앱 탭 렌더링 -->
+        </div>
+
+        <!-- 우측 액션: 검색창 & [➕ 새 가이드 작성] -->
+        <div class="flex items-center gap-3">
+          <div class="relative w-64">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input id="input-search" type="text" placeholder="가이드명, 대상 URL 검색..." class="w-full pl-9 pr-3.5 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
+          </div>
+
+          <button id="btn-open-create-modal" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm active:scale-95 whitespace-nowrap">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            새 가이드 작성
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. 가이드 마스터 테이블 -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/80 text-[11px] font-bold text-slate-500 uppercase tracking-wider border-b border-slate-200">
+              <th class="py-3 px-4">투어 ID</th>
+              <th class="py-3 px-4">가이드명 (Title)</th>
+              <th class="py-3 px-4">시스템 (App ID)</th>
+              <th class="py-3 px-4">대상 URL (Target)</th>
+              <th class="py-3 px-4 text-center">단계 수 (Steps)</th>
+              <th class="py-3 px-4 text-center">버전</th>
+              <th class="py-3 px-4">타입 (Type)</th>
+              <th class="py-3 px-4 text-right">작업 (Actions)</th>
+            </tr>
+          </thead>
+          <tbody id="tours-table-body" class="divide-y divide-slate-100 text-xs">
+            <!-- 동적 렌더링 -->
+            <tr>
+              <td colspan="8" class="text-center py-12 text-slate-400">데이터를 불러오는 중입니다...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 테이블 하단 상태바 -->
+      <div class="px-5 py-3 bg-slate-50/60 border-t border-slate-200 text-xs text-slate-500 flex items-center justify-between">
+        <div>
+          총 <span id="table-count" class="font-bold text-slate-700">0</span>건의 가이드가 표시 중입니다.
+        </div>
+        <div class="flex items-center gap-4 text-[11px]">
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Onboarding</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span> What's New</span>
+          <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-slate-400"></span> General/Page</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 바닥글 -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto px-4">
+      <p>NoCode DAP (Digital Adoption Platform) Enterprise Console &copy; 2026. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- 6. 스텝 상세 모달 (Step Inspector Modal) -->
+  <div id="modal-step-inspector" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs hidden transition-opacity">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] flex flex-col border border-slate-200 overflow-hidden transform transition-all">
+      <!-- 모달 헤더 -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+        <div>
+          <span id="inspect-modal-subtitle" class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">Step Inspector</span>
+          <h3 id="inspect-modal-title" class="text-base font-bold text-slate-900">가이드 스텝 상세</h3>
+        </div>
+        <button id="btn-close-inspect-modal" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 모달 본문 (스텝 카드 리스트) -->
+      <div class="p-6 overflow-y-auto space-y-4 flex-1 bg-slate-50/50" id="inspect-steps-container">
+        <!-- 동적 스텝 카드 렌더링 -->
+      </div>
+
+      <!-- 모달 푸터 -->
+      <div class="px-6 py-3.5 border-t border-slate-200 bg-white flex items-center justify-between">
+        <span id="inspect-modal-step-count" class="text-xs text-slate-500 font-medium">총 0개 스텝</span>
+        <button id="btn-close-inspect-modal-bottom" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+          닫기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. 새 가이드 간이 등록 모달 -->
+  <div id="modal-create-tour" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs hidden transition-opacity">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full max-h-[90vh] flex flex-col border border-slate-200 overflow-hidden">
+      <!-- 헤더 -->
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+        <div>
+          <span class="text-[11px] font-bold text-blue-600 uppercase tracking-wider">Quick Tour Registration</span>
+          <h3 class="text-base font-bold text-slate-900">➕ 새 가이드 간이 등록</h3>
+        </div>
+        <button id="btn-close-create-modal" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- 폼 -->
+      <form id="form-create-tour" class="p-6 overflow-y-auto space-y-4 flex-1">
+        <!-- 투어 ID -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">투어 식별자 ID <span class="text-slate-400 font-normal">(자동 생성됨)</span></label>
+          <input type="text" id="create-tour-id" required class="w-full text-xs font-mono px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <!-- 가이드명 (Title) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">가이드명 (Title) <span class="text-red-500">*</span></label>
+          <input type="text" id="create-tour-title" placeholder="예: 신규 대시보드 온보딩 가이드" required class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- App ID -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">시스템 App ID</label>
+            <input type="text" id="create-tour-app-id" value="default" placeholder="default" required class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <!-- Target URL -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">대상 URL (Target URL)</label>
+            <input type="text" id="create-tour-target-url" value="/" placeholder="/" required class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- 타입 -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">타입 (Type)</label>
+            <select id="create-tour-type" class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="onboarding">Onboarding (온보딩)</option>
+              <option value="whats-new">What's New (신규 기능 공지)</option>
+              <option value="page-guide">Page Guide (화면 도움말)</option>
+              <option value="general">General (일반)</option>
+            </select>
+          </div>
+
+          <!-- 버전 -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">가이드 버전</label>
+            <input type="text" id="create-tour-version" value="1.0.0" class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <!-- 설명 -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">가이드 설명 (Description)</label>
+          <textarea id="create-tour-desc" rows="2" placeholder="가이드에 대한 목적과 설명을 입력하세요." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <!-- 옵션: 자동 실행 여부 -->
+        <div class="flex items-center gap-2 pt-1">
+          <input type="checkbox" id="create-tour-auto-launch" class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+          <label for="create-tour-auto-launch" class="text-xs text-slate-700 font-medium cursor-pointer">
+            사용자 접속 시 최초 1회 자동 실행 (Auto Launch Once)
+          </label>
+        </div>
+
+        <!-- 초기 1단계 스텝 설정 섹션 -->
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+              <span class="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px]">1</span>
+              초기 스텝 1 (필수)
+            </span>
+            <span class="text-[10px] text-slate-400">추가 스텝은 현장 저작기에서 확장 가능</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">대상 요소 셀렉터 (CSS Selector)</label>
+              <input type="text" id="create-step-element" value="#header-search" required placeholder="#element-id 또는 .class" class="w-full text-xs font-mono px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">팝오버 위치 (Side)</label>
+              <select id="create-step-side" class="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="bottom">Bottom (하단)</option>
+                <option value="top">Top (상단)</option>
+                <option value="left">Left (좌측)</option>
+                <option value="right">Right (우측)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">팝오버 제목 (Popover Title)</label>
+            <input type="text" id="create-step-title" value="안내를 시작합니다" required class="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-0.5">팝오버 안내 본문 (Popover Description)</label>
+            <input type="text" id="create-step-desc" value="이 요소를 클릭하여 새로운 워크플로우를 경험해보세요." required class="w-full text-xs px-2.5 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          </div>
+        </div>
+
+        <!-- 폼 제출 버튼 -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" id="btn-cancel-create" class="px-4 py-2 text-xs font-bold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+            취소
+          </button>
+          <button type="submit" class="px-5 py-2 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white transition shadow-sm active:scale-95">
+            가이드 등록 완료
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 컴포넌트 -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 max-w-sm bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-xl border border-slate-700 flex items-center gap-2 transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300">
+    <span id="toast-icon">✅</span>
+    <span id="toast-message">작업이 성공적으로 완료되었습니다.</span>
+  </div>
+
+  <!-- 프론트엔드 자바스크립트 로직 -->
+  <script>
+    // 전역 상태
+    const state = {
+      tours: [],
+      stats: null,
+      selectedApp: 'all',
+      searchQuery: '',
+      origin: window.location.origin
+    };
+
+    // DOM 요소 캐시
+    const dom = {
+      btnRefresh: document.getElementById('btn-refresh'),
+      selectIntegrationApp: document.getElementById('select-integration-app'),
+      codeEmbedTag: document.getElementById('code-embed-tag'),
+      btnCopyEmbed: document.getElementById('btn-copy-embed'),
+      linkBookmarklet: document.getElementById('link-bookmarklet'),
+      btnCopyBookmarklet: document.getElementById('btn-copy-bookmarklet'),
+      kpiTotalApps: document.getElementById('kpi-total-apps'),
+      kpiAppsSub: document.getElementById('kpi-apps-sub'),
+      kpiTotalTours: document.getElementById('kpi-total-tours'),
+      kpiTotalSteps: document.getElementById('kpi-total-steps'),
+      kpiWhatsNewTours: document.getElementById('kpi-whats-new-tours'),
+      appFilterTabs: document.getElementById('app-filter-tabs'),
+      inputSearch: document.getElementById('input-search'),
+      btnOpenCreateModal: document.getElementById('btn-open-create-modal'),
+      toursTableBody: document.getElementById('tours-table-body'),
+      tableCount: document.getElementById('table-count'),
+      // 스텝 모달
+      modalStepInspector: document.getElementById('modal-step-inspector'),
+      inspectModalTitle: document.getElementById('inspect-modal-title'),
+      inspectModalSubtitle: document.getElementById('inspect-modal-subtitle'),
+      inspectStepsContainer: document.getElementById('inspect-steps-container'),
+      inspectModalStepCount: document.getElementById('inspect-modal-step-count'),
+      btnCloseInspectModal: document.getElementById('btn-close-inspect-modal'),
+      btnCloseInspectModalBottom: document.getElementById('btn-close-inspect-modal-bottom'),
+      // 생성 모달
+      modalCreateTour: document.getElementById('modal-create-tour'),
+      formCreateTour: document.getElementById('form-create-tour'),
+      createTourId: document.getElementById('create-tour-id'),
+      createTourTitle: document.getElementById('create-tour-title'),
+      createTourAppId: document.getElementById('create-tour-app-id'),
+      createTourTargetUrl: document.getElementById('create-tour-target-url'),
+      createTourType: document.getElementById('create-tour-type'),
+      createTourVersion: document.getElementById('create-tour-version'),
+      createTourDesc: document.getElementById('create-tour-desc'),
+      createTourAutoLaunch: document.getElementById('create-tour-auto-launch'),
+      createStepElement: document.getElementById('create-step-element'),
+      createStepSide: document.getElementById('create-step-side'),
+      createStepTitle: document.getElementById('create-step-title'),
+      createStepDesc: document.getElementById('create-step-desc'),
+      btnCloseCreateModal: document.getElementById('btn-close-create-modal'),
+      btnCancelCreate: document.getElementById('btn-cancel-create'),
+      // 토스트
+      toast: document.getElementById('toast'),
+      toastIcon: document.getElementById('toast-icon'),
+      toastMessage: document.getElementById('toast-message')
+    };
+
+    /**
+     * 토스트 알림 표시
+     */
+    let toastTimeout = null;
+    function showToast(message, icon = '✅') {
+      if (toastTimeout) clearTimeout(toastTimeout);
+      dom.toastIcon.textContent = icon;
+      dom.toastMessage.textContent = message;
+      dom.toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+      dom.toast.classList.add('translate-y-0', 'opacity-100');
+
+      toastTimeout = setTimeout(() => {
+        dom.toast.classList.remove('translate-y-0', 'opacity-100');
+        dom.toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    /**
+     * 클립보드 복사 헬퍼
+     */
+    async function copyToClipboard(text, successMsg = '클립보드에 복사되었습니다.') {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textArea = document.createElement('textarea');
+          textArea.value = text;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-999999px';
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          document.execCommand('copy');
+          textArea.remove();
+        }
+        showToast(successMsg, '📋');
+      } catch (err) {
+        console.error('클립보드 복사 실패:', err);
+        showToast('클립보드 복사에 실패했습니다.', '⚠️');
+      }
+    }
+
+    /**
+     * Integration Studio 코드 갱신
+     */
+    function updateIntegrationStudio() {
+      const appId = dom.selectIntegrationApp.value || 'default';
+      const origin = state.origin;
+
+      // 1-Click 임베드 코드
+      const embedCode = `<script src="${origin}/runtime.js" data-app-id="${appId}" defer><\/script>`;
+      dom.codeEmbedTag.textContent = embedCode;
+
+      // 북마클릿 코드
+      const bookmarkletCode = `javascript:(function(){window.DAP_SERVER_URL='${origin}';const s=document.createElement('script');s.src='${origin}/builder.js';document.body.appendChild(s);})();`;
+      dom.linkBookmarklet.setAttribute('href', bookmarkletCode);
+    }
+
+    /**
+     * 서버로부터 통계 및 투어 목록 로드
+     */
+    async function loadData() {
+      try {
+        // 통계 및 투어 병렬 조회
+        const [statsRes, toursRes] = await Promise.all([
+          fetch('/api/admin/stats'),
+          fetch('/api/tours')
+        ]);
+
+        if (!statsRes.ok || !toursRes.ok) {
+          throw new Error('API 호출 중 오류가 발생했습니다.');
+        }
+
+        state.stats = await statsRes.json();
+        state.tours = await toursRes.json();
+
+        // UI 갱신
+        renderKPIs();
+        renderAppOptionsAndTabs();
+        renderTable();
+        updateIntegrationStudio();
+      } catch (err) {
+        console.error('데이터 로드 실패:', err);
+        showToast('데이터를 불러오지 못했습니다.', '❌');
+      }
+    }
+
+    /**
+     * KPI 통계 렌더링
+     */
+    function renderKPIs() {
+      if (!state.stats) return;
+
+      const { totalApps, totalTours, totalSteps, apps } = state.stats;
+
+      dom.kpiTotalApps.textContent = totalApps || 0;
+      dom.kpiAppsSub.textContent = apps && apps.length > 0 ? apps.join(', ') : '등록된 앱 없음';
+      dom.kpiTotalTours.textContent = totalTours || 0;
+      dom.kpiTotalSteps.textContent = totalSteps || 0;
+
+      // What's New 투어 계산 (type이 whats-new이거나 title에 what's new 포함)
+      const whatsNewCount = state.tours.filter(t => {
+        const type = (t.type || '').toLowerCase();
+        return type === 'whats-new' || type === 'whats_new' || type === 'new';
+      }).length;
+      dom.kpiWhatsNewTours.textContent = whatsNewCount;
+    }
+
+    /**
+     * 시스템 필터 탭 및 Integration App Select 옵션 렌더링
+     */
+    function renderAppOptionsAndTabs() {
+      const apps = state.stats && state.stats.apps ? state.stats.apps : ['default'];
+      if (!apps.includes('default')) apps.unshift('default');
+
+      // 1. Integration Select 갱신
+      const currentSelectedIntegration = dom.selectIntegrationApp.value;
+      dom.selectIntegrationApp.innerHTML = apps.map(app => `
+        <option value="${escapeHtml(app)}" ${app === currentSelectedIntegration ? 'selected' : ''}>${escapeHtml(app)}</option>
+      `).join('');
+
+      // 2. 탭 버튼 갱신
+      let tabsHtml = `
+        <button data-app="all" class="app-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition ${state.selectedApp === 'all' ? 'bg-slate-900 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+          전체 (${state.tours.length})
+        </button>
+      `;
+
+      apps.forEach(app => {
+        const count = state.tours.filter(t => (t.app_id || t.appId || 'default') === app).length;
+        const isActive = state.selectedApp === app;
+        tabsHtml += `
+          <button data-app="${escapeHtml(app)}" class="app-tab-btn px-3 py-1.5 rounded-lg text-xs font-bold transition ${isActive ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+            ${escapeHtml(app)} (${count})
+          </button>
+        `;
+      });
+
+      dom.appFilterTabs.innerHTML = tabsHtml;
+
+      // 탭 클릭 이벤트 바인딩
+      dom.appFilterTabs.querySelectorAll('.app-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.selectedApp = btn.getAttribute('data-app');
+          renderAppOptionsAndTabs();
+          renderTable();
+        });
+      });
+    }
+
+    /**
+     * 가이드 마스터 테이블 렌더링
+     */
+    function renderTable() {
+      const q = state.searchQuery.toLowerCase().trim();
+      const app = state.selectedApp;
+
+      const filtered = state.tours.filter(tour => {
+        // 앱 필터링
+        const tourApp = tour.app_id || tour.appId || 'default';
+        if (app !== 'all' && tourApp !== app) return false;
+
+        // 검색어 필터링
+        if (q) {
+          const matchTitle = (tour.title || '').toLowerCase().includes(q);
+          const matchId = (tour.id || '').toLowerCase().includes(q);
+          const matchUrl = (tour.target_url || tour.targetUrl || '').toLowerCase().includes(q);
+          const matchDesc = (tour.description || '').toLowerCase().includes(q);
+          if (!matchTitle && !matchId && !matchUrl && !matchDesc) return false;
+        }
+
+        return true;
+      });
+
+      dom.tableCount.textContent = filtered.length;
+
+      if (filtered.length === 0) {
+        dom.toursTableBody.innerHTML = `
+          <tr>
+            <td colspan="8" class="text-center py-12">
+              <div class="flex flex-col items-center justify-center text-slate-400">
+                <span class="text-3xl mb-2">🔍</span>
+                <p class="text-sm font-medium text-slate-600">조건에 일치하는 가이드가 없습니다.</p>
+                <p class="text-xs text-slate-400 mt-1">검색어를 변경하거나 [➕ 새 가이드 작성] 버튼을 클릭해 첫 가이드를 등록하세요.</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      dom.toursTableBody.innerHTML = filtered.map(tour => {
+        const id = escapeHtml(tour.id);
+        const title = escapeHtml(tour.title || 'Untitled Tour');
+        const desc = escapeHtml(tour.description || '');
+        const appId = escapeHtml(tour.app_id || tour.appId || 'default');
+        const targetUrl = escapeHtml(tour.target_url || tour.targetUrl || '/');
+        const steps = Array.isArray(tour.steps) ? tour.steps : [];
+        const stepCount = steps.length;
+        const version = escapeHtml(tour.version || '1.0.0');
+        const type = (tour.type || 'general').toLowerCase();
+
+        // 타입 뱃지 스타일
+        let typeBadgeClass = 'bg-slate-100 text-slate-700 border-slate-200';
+        let typeLabel = '일반 (General)';
+        if (type === 'onboarding') {
+          typeBadgeClass = 'bg-blue-50 text-blue-700 border-blue-200';
+          typeLabel = '온보딩';
+        } else if (type === 'whats-new' || type === 'whats_new') {
+          typeBadgeClass = 'bg-amber-50 text-amber-700 border-amber-200';
+          typeLabel = "What's New";
+        } else if (type === 'page-guide') {
+          typeBadgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+          typeLabel = '페이지 안내';
+        }
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition group">
+            <!-- ID -->
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-500 font-medium">
+              ${id}
+            </td>
+
+            <!-- 가이드명 & 설명 -->
+            <td class="py-3 px-4">
+              <div class="font-bold text-slate-900 text-xs">${title}</div>
+              ${desc ? `<div class="text-[11px] text-slate-400 line-clamp-1 mt-0.5">${desc}</div>` : ''}
+            </td>
+
+            <!-- App ID -->
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                ${appId}
+              </span>
+            </td>
+
+            <!-- Target URL -->
+            <td class="py-3 px-4 font-mono text-[11px] text-slate-600">
+              ${targetUrl}
+            </td>
+
+            <!-- Steps -->
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 text-blue-700 font-bold text-xs">
+                ${stepCount}
+              </span>
+            </td>
+
+            <!-- Version -->
+            <td class="py-3 px-4 text-center font-mono text-[11px] text-slate-500">
+              v${version}
+            </td>
+
+            <!-- Type -->
+            <td class="py-3 px-4">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium border ${typeBadgeClass}">
+                ${typeLabel}
+              </span>
+            </td>
+
+            <!-- 액션 버튼들 -->
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <div class="inline-flex items-center gap-1.5">
+                <!-- 스텝 상세 모달 열기 -->
+                <button onclick="handleInspectTour('${id}')" title="스텝 상세 보기" class="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 transition">
+                  👁️ <span class="text-[11px] font-medium hidden xl:inline">스텝 상세</span>
+                </button>
+
+                <!-- 미리보기 (Preview) -->
+                <a href="${targetUrl}${targetUrl.includes('?') ? '&' : '?'}dap_preview=${id}" target="_blank" title="실제 화면에서 가이드 미리보기" class="p-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600 transition inline-flex items-center gap-1">
+                  ▶️ <span class="text-[11px] font-medium hidden xl:inline">미리보기</span>
+                </a>
+
+                <!-- 현장 저작 (Builder) -->
+                <a href="${targetUrl}${targetUrl.includes('?') ? '&' : '?'}dap_builder=true&builder=true" target="_blank" title="실제 화면에서 현장 저작 모드로 열기" class="p-1.5 rounded-lg bg-slate-100 hover:bg-amber-50 hover:text-amber-700 text-slate-600 transition inline-flex items-center gap-1">
+                  🛠️ <span class="text-[11px] font-medium hidden xl:inline">현장 저작</span>
+                </a>
+
+                <!-- 삭제 (Delete) -->
+                <button onclick="handleDeleteTour('${id}', '${title}')" title="투어 삭제" class="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-400 hover:text-red-600 transition">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    /**
+     * 스텝 상세 검사 모달 열기
+     */
+    window.handleInspectTour = function(tourId) {
+      const tour = state.tours.find(t => t.id === tourId);
+      if (!tour) return;
+
+      dom.inspectModalTitle.textContent = tour.title || 'Untitled Tour';
+      dom.inspectModalSubtitle.textContent = `[${tour.app_id || tour.appId || 'default'}] ${tour.target_url || tour.targetUrl || '/'}`;
+      
+      const steps = Array.isArray(tour.steps) ? tour.steps : [];
+      dom.inspectModalStepCount.textContent = `총 ${steps.length}개 스텝으로 구성된 가이드`;
+
+      if (steps.length === 0) {
+        dom.inspectStepsContainer.innerHTML = `
+          <div class="text-center py-8 text-slate-400 text-xs">
+            등록된 스텝이 없습니다. 현장 저작기에서 요소를 클릭해 스텝을 추가하세요.
+          </div>
+        `;
+      } else {
+        dom.inspectStepsContainer.innerHTML = steps.map((step, idx) => {
+          const element = escapeHtml(step.element || '(선택자 없음)');
+          const popover = step.popover || {};
+          const title = escapeHtml(popover.title || `Step ${idx + 1}`);
+          const desc = escapeHtml(popover.description || '');
+          const side = escapeHtml(popover.side || 'bottom');
+
+          return `
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-2xs relative">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">
+                    ${idx + 1}
+                  </span>
+                  <h4 class="font-bold text-slate-900 text-sm">${title}</h4>
+                </div>
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                  ${side}
+                </span>
+              </div>
+
+              <div class="mt-2.5 space-y-1.5 pl-8">
+                <div class="flex items-center gap-2">
+                  <span class="text-[11px] text-slate-400 font-semibold">Selector:</span>
+                  <code class="text-[11px] font-mono bg-slate-100 text-blue-700 px-2 py-0.5 rounded border border-slate-200 select-all">${element}</code>
+                </div>
+                ${desc ? `
+                  <div class="text-xs text-slate-600 mt-1 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                    ${desc}
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      dom.modalStepInspector.classList.remove('hidden');
+    };
+
+    /**
+     * 가이드 삭제 처리
+     */
+    window.handleDeleteTour = async function(tourId, tourTitle) {
+      if (!confirm(`정말로 가이드 "${tourTitle}" (${tourId})을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) {
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/tours/${encodeURIComponent(tourId)}`, {
+          method: 'DELETE'
+        });
+
+        if (!res.ok) {
+          throw new Error('삭제 요청이 실패했습니다.');
+        }
+
+        showToast(`가이드 "${tourTitle}"이(가) 성공적으로 삭제되었습니다.`, '🗑️');
+        loadData();
+      } catch (err) {
+        console.error('삭제 오류:', err);
+        showToast('가이드 삭제 중 오류가 발생했습니다.', '❌');
+      }
+    };
+
+    /**
+     * 새 가이드 간이 등록 처리
+     */
+    async function handleCreateTourSubmit(e) {
+      e.preventDefault();
+
+      const id = dom.createTourId.value.trim();
+      const title = dom.createTourTitle.value.trim();
+      const appId = dom.createTourAppId.value.trim() || 'default';
+      const targetUrl = dom.createTourTargetUrl.value.trim() || '/';
+      const type = dom.createTourType.value;
+      const version = dom.createTourVersion.value.trim() || '1.0.0';
+      const description = dom.createTourDesc.value.trim();
+      const autoLaunchOnce = dom.createTourAutoLaunch.checked;
+
+      const element = dom.createStepElement.value.trim();
+      const stepSide = dom.createStepSide.value;
+      const stepTitle = dom.createStepTitle.value.trim();
+      const stepDesc = dom.createStepDesc.value.trim();
+
+      if (!title) {
+        showToast('가이드 제목을 입력해주세요.', '⚠️');
+        return;
+      }
+      if (!element || !stepTitle) {
+        showToast('스텝 1의 대상 요소와 제목을 모두 입력해주세요.', '⚠️');
+        return;
+      }
+
+      const payload = {
+        id: id || undefined,
+        title,
+        app_id: appId,
+        appId: appId,
+        target_url: targetUrl,
+        targetUrl: targetUrl,
+        type,
+        version,
+        description,
+        auto_launch_once: autoLaunchOnce ? 1 : 0,
+        autoLaunchOnce,
+        steps: [
+          {
+            element,
+            popover: {
+              title: stepTitle,
+              description: stepDesc,
+              side: stepSide
+            }
+          }
+        ]
+      };
+
+      try {
+        const res = await fetch('/api/tours', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.error || '가이드 생성 중 오류가 발생했습니다.');
+        }
+
+        const created = await res.json();
+        showToast(`새 가이드 "${created.title}"이(가) 등록되었습니다!`, '🎉');
+        closeCreateModal();
+        loadData();
+      } catch (err) {
+        console.error('가이드 생성 실패:', err);
+        showToast(err.message || '가이드 등록에 실패했습니다.', '❌');
+      }
+    }
+
+    /**
+     * 모달 열기/닫기 헬퍼들
+     */
+    function openCreateModal() {
+      // 신규 ID 자동 생성 세팅
+      dom.createTourId.value = `tour_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      dom.createTourTitle.value = '';
+      dom.createTourDesc.value = '';
+      dom.createTourAppId.value = state.selectedApp !== 'all' ? state.selectedApp : 'default';
+      dom.createTourTargetUrl.value = '/';
+      dom.createTourType.value = 'onboarding';
+      dom.createTourVersion.value = '1.0.0';
+      dom.createTourAutoLaunch.checked = false;
+      dom.modalCreateTour.classList.remove('hidden');
+      setTimeout(() => dom.createTourTitle.focus(), 50);
+    }
+
+    function closeCreateModal() {
+      dom.modalCreateTour.classList.add('hidden');
+    }
+
+    function closeInspectModal() {
+      dom.modalStepInspector.classList.add('hidden');
+    }
+
+    /**
+     * HTML Escape 유틸
+     */
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return String(str || '');
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    /**
+     * 이벤트 리스너 등록
+     */
+    function bindEvents() {
+      // 새로고침 버튼
+      dom.btnRefresh.addEventListener('click', () => {
+        loadData();
+        showToast('데이터를 새로고침했습니다.', '🔄');
+      });
+
+      // Integration Studio 앱 변경
+      dom.selectIntegrationApp.addEventListener('change', updateIntegrationStudio);
+
+      // 클립보드 복사 버튼들
+      dom.btnCopyEmbed.addEventListener('click', () => {
+        copyToClipboard(dom.codeEmbedTag.textContent, '임베드 스크립트 코드가 복사되었습니다.');
+      });
+
+      dom.btnCopyBookmarklet.addEventListener('click', () => {
+        const href = dom.linkBookmarklet.getAttribute('href');
+        copyToClipboard(href, '북마클릿 자바스크립트 코드가 복사되었습니다.');
+      });
+
+      // 검색창 입력 이벤트
+      dom.inputSearch.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderTable();
+      });
+
+      // 생성 모달
+      dom.btnOpenCreateModal.addEventListener('click', openCreateModal);
+      dom.btnCloseCreateModal.addEventListener('click', closeCreateModal);
+      dom.btnCancelCreate.addEventListener('click', closeCreateModal);
+      dom.formCreateTour.addEventListener('submit', handleCreateTourSubmit);
+
+      // 스텝 모달
+      dom.btnCloseInspectModal.addEventListener('click', closeInspectModal);
+      dom.btnCloseInspectModalBottom.addEventListener('click', closeInspectModal);
+
+      // ESC 키로 모달 닫기
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeCreateModal();
+          closeInspectModal();
+        }
+      });
+    }
+
+    // 앱 초기화 실행
+    document.addEventListener('DOMContentLoaded', () => {
+      bindEvents();
+      loadData();
+    });
+  </script>
+</body>
+</html>

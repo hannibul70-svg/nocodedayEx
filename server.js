@@ -61,8 +61,24 @@ try {
   // Static files serving
   app.use(express.static(PUBLIC_DIR));
 
-  // REST API: GET /api/tours
-  app.get('/api/tours', (req, res) => {
+  // Admin Portal route: GET /admin
+  app.get('/admin', (req, res) => {
+    res.sendFile(path.join(PUBLIC_DIR, 'admin.html'));
+  });
+
+  // Admin Stats API: GET /api/admin/stats
+  app.get('/api/admin/stats', (req, res) => {
+    try {
+      const stats = db.getAdminStats();
+      res.json(stats);
+    } catch (err) {
+      console.error('Error fetching admin stats:', err);
+      res.status(500).json({ error: '관리자 통계 조회 중 오류가 발생했습니다.' });
+    }
+  });
+
+  // REST API: GET /api/tours & GET /api/guides
+  app.get(['/api/tours', '/api/guides'], (req, res) => {
     try {
       const url = req.query.url || req.query.target_url;
       const appId = req.query.appId || req.query.app_id;
@@ -131,8 +147,36 @@ try {
     const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
     const pathname = parsedUrl.pathname;
 
-    // API Routes
-    if (pathname === '/api/tours' && req.method === 'GET') {
+    // Admin Portal route
+    if (pathname === '/admin' && req.method === 'GET') {
+      const adminPath = path.join(PUBLIC_DIR, 'admin.html');
+      fs.readFile(adminPath, (err, data) => {
+        if (err) {
+          res.writeHead(404, { 'Content-Type': 'text/plain; charset=UTF-8' });
+          res.end('404 Not Found');
+          return;
+        }
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=UTF-8' });
+        res.end(data);
+      });
+      return;
+    }
+
+    // Admin Stats API: GET /api/admin/stats
+    if (pathname === '/api/admin/stats' && req.method === 'GET') {
+      try {
+        const stats = db.getAdminStats();
+        res.writeHead(200, { 'Content-Type': 'application/json; charset=UTF-8' });
+        res.end(JSON.stringify(stats));
+      } catch (err) {
+        res.writeHead(500, { 'Content-Type': 'application/json; charset=UTF-8' });
+        res.end(JSON.stringify({ error: '관리자 통계 조회 중 오류가 발생했습니다.' }));
+      }
+      return;
+    }
+
+    // API Routes: GET /api/tours & GET /api/guides
+    if ((pathname === '/api/tours' || pathname === '/api/guides') && req.method === 'GET') {
       const url = parsedUrl.searchParams.get('url') || parsedUrl.searchParams.get('target_url') || undefined;
       const appId = parsedUrl.searchParams.get('appId') || parsedUrl.searchParams.get('app_id') || undefined;
       const tours = db.getTours({ url, appId });

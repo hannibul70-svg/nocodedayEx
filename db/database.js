@@ -267,6 +267,27 @@ function closeDatabase() {
     currentDb = null;
   }
 }
+/**
+ * 관리자용 요약 통계 정보 조회
+ */
+function getAdminStats() {
+  if (!currentDb) initDatabase();
+  const tours = getTours();
+  const appsSet = new Set(tours.map(t => t.appId || t.app_id || 'default'));
+  const totalSteps = tours.reduce((acc, t) => acc + (Array.isArray(t.steps) ? t.steps.length : 0), 0);
+  const appCounts = {};
+  tours.forEach(t => {
+    const a = t.appId || t.app_id || 'default';
+    appCounts[a] = (appCounts[a] || 0) + 1;
+  });
+  return {
+    totalApps: appsSet.size,
+    apps: Array.from(appsSet),
+    appCounts,
+    totalTours: tours.length,
+    totalSteps
+  };
+}
 
 module.exports = {
   initDatabase,
@@ -276,6 +297,7 @@ module.exports = {
   saveTour,
   deleteTour,
   closeDatabase,
+  getAdminStats,
   rowToTour,
   getDriverName: () => dbDriverName
 };
