@@ -458,7 +458,6 @@
         onHighlightStarted: () => {
           setTimeout(() => attachOpacityControl(), 50);
         },
-        onDestroyStarted: () => {},
         onDestroyed: () => {
           currentDriver = null;
         }
