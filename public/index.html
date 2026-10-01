@@ -458,9 +458,136 @@
     .badge-warning { background-color: #fef3c7; color: #b45309; }
     .badge-info { background-color: #e0f2fe; color: #0369a1; }
 
+    /* 반응형 모바일 메뉴 및 백드롭 기본값 */
+    .mobile-menu-btn {
+      display: none;
+    }
+
+    .sidebar-backdrop {
+      display: none;
+    }
+
     @media (max-width: 1024px) {
       .metric-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      aside#portal-sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+        box-shadow: none;
+      }
+
+      body.sidebar-open aside#portal-sidebar {
+        left: 0;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+      }
+
+      .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.5);
+        z-index: 999;
+        display: none;
+        backdrop-filter: blur(2px);
+      }
+
+      body.sidebar-open .sidebar-backdrop {
+        display: block;
+      }
+
+      .mobile-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        width: 38px;
+        height: 38px;
+        font-size: 1.25rem;
+        color: var(--text-main);
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+
+      header#portal-header {
+        padding: 0 16px;
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .header-left {
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .header-left h2 {
+        font-size: 1rem !important;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .header-search-wrap {
+        display: none;
+      }
+
+      .header-right {
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      #btn-toggle-builder, #btn-reset-guide-history {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+      }
+
+      main#portal-main, .main-content {
+        padding: 16px !important;
+      }
+
+      .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      .filter-group, .action-group {
+        flex-wrap: wrap;
+        width: 100%;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 8px;
+      }
+
+      table#table-orders {
+        min-width: 700px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .metric-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
     }
   </style>
@@ -503,6 +630,7 @@
     <!-- 상단 헤더 -->
     <header id="portal-header">
       <div class="header-left">
+        <button id="btn-mobile-menu" class="mobile-menu-btn" aria-label="메뉴 열기">☰</button>
         <h2 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">DAP Enterprise Portal</h2>
         <div class="header-search-wrap">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -679,6 +807,31 @@
 
   <!-- DAP Builder (No-Code Authoring Tool) -->
   <script src="builder.js"></script>
+
+  <!-- 사이드바 모바일 백드롭 -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop"></div>
+
+  <!-- 모바일 햄버거 메뉴 토글 스크립트 -->
+  <script>
+    const mobileMenuBtn = document.getElementById('btn-mobile-menu');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    if (mobileMenuBtn && backdrop) {
+      mobileMenuBtn.addEventListener('click', () => {
+        document.body.classList.toggle('sidebar-open');
+      });
+      backdrop.addEventListener('click', () => {
+        document.body.classList.remove('sidebar-open');
+      });
+      // 메뉴 항목 클릭 시 모바일에서 사이드바 자동 닫기
+      document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if (window.innerWidth <= 768) {
+            document.body.classList.remove('sidebar-open');
+          }
+        });
+      });
+    }
+  </script>
 
 </body>
 </html>
