@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoCode DAP Extended (nocodedapEx) 기술 스택 및 아키텍처 명세서</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --primary-light: #eff6ff;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-900: #0f172a;
+      --emerald-500: #10b981;
+      --emerald-50: #ecfdf5;
+      --amber-500: #f59e0b;
+      --amber-50: #fffbeb;
+      --indigo-500: #6366f1;
+      --indigo-50: #eef2ff;
+      --purple-500: #8b5cf6;
+      --purple-50: #f5f3ff;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--slate-50);
+      color: var(--slate-800);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* 상단 헤더 */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+      color: #ffffff;
+      padding: 48px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59, 130, 246, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      color: #93c5fd;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    .header-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .header-desc {
+      font-size: 1.1rem;
+      color: #cbd5e1;
+      max-width: 860px;
+      line-height: 1.6;
+    }
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+    .header-meta span strong {
+      color: #ffffff;
+    }
+
+    /* 네비게이션 앵커 바 */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #ffffff;
+      border-bottom: 1px solid var(--slate-200);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+      padding: 10px 24px;
+      overflow-x: auto;
+    }
+    .nav-link {
+      color: var(--slate-600);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 8px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .nav-link:hover {
+      background-color: var(--slate-100);
+      color: var(--primary);
+    }
+
+    /* 본문 레이아웃 */
+    .main-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* 섹션 공통 */
+    .section-card {
+      background: #ffffff;
+      border: 1px solid var(--slate-200);
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--slate-100);
+    }
+    .section-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+    .section-subtitle {
+      font-size: 0.85rem;
+      color: var(--slate-600);
+      margin-top: 2px;
+    }
+
+    /* 그리드 레이아웃 */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    /* 아키텍처 다이어그램 박스 */
+    .arch-diagram {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 28px;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .arch-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .arch-box {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 16px;
+      position: relative;
+    }
+    .arch-box.highlight {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+    .arch-box-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .arch-box-desc {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+    .arch-arrow {
+      text-align: center;
+      color: #64748b;
+      font-size: 1.2rem;
+      margin: -6px 0;
+    }
+
+    /* 기술 스택 카드 */
+    .tech-card {
+      background: var(--slate-50);
+      border: 1px solid var(--slate-200);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .tech-card:hover {
+      transform: translateY(-2px);
+      border-color: #93c5fd;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.06);
+    }
+    .tech-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .tech-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--slate-900);
+    }
+    .tech-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .tech-desc {
+      font-size: 0.85rem;
+      color: var(--slate-600);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .tech-features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--slate-700);
+    }
+    .tech-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .tech-features li::before {
+      content: "•";
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    /* 뱃지 색상 */
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-emerald { background: #d1fae5; color: #065f46; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    .badge-purple { background: #ede9fe; color: #5b21b6; }
+    .badge-slate { background: #e2e8f0; color: #334155; }
+
+    /* 비교 테이블 */
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.88rem;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 12px 16px;
+      border: 1px solid var(--slate-200);
+      text-align: left;
+    }
+    .comparison-table th {
+      background-color: var(--slate-100);
+      color: var(--slate-700);
+      font-weight: 700;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .comparison-table tr:hover {
+      background-color: var(--slate-50);
+    }
+    .cell-check {
+      color: var(--emerald-500);
+      font-weight: bold;
+    }
+    .cell-cross {
+      color: #94a3b8;
+    }
+
+    /* 코드 블록 */
+    .code-box {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #e2e8f0;
+      overflow-x: auto;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+    .code-box .keyword { color: #f43f5e; }
+    .code-box .string { color: #10b981; }
+    .code-box .comment { color: #64748b; font-style: italic; }
+    .code-box .attr { color: #38bdf8; }
+
+    /* 푸터 */
+    .footer {
+      background: #ffffff;
+      border-top: 1px solid var(--slate-200);
+      padding: 32px 24px;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--slate-600);
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      .header-title { font-size: 1.7rem; }
+      .section-card { padding: 20px; }
+      .arch-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 영역 -->
+  <header class="header">
+    <div class="header-container">
+      <div class="header-badge">Enterprise DAP Architectural Overview</div>
+      <h1 class="header-title">⚡ NoCode DAP Extended (nocodedapEx)</h1>
+      <p class="header-desc">
+        사내 ERP, 그룹웨어, 포털 등 복수 업무 시스템(Multi-App)을 중앙에서 관제하고, 무중단으로 인터랙티브 온보딩 가이드를 저작 및 배포할 수 있는 고성능 노코드 디지털 어답션 플랫폼의 프레임워크 및 기술 스택 명세서입니다.
+      </p>
+      <div class="header-meta">
+        <span>프로젝트 위치: <strong>C:\Workspaces\nocodedapEx</strong></span>
+        <span>서비스 포트: <strong>HTTP 3050</strong></span>
+        <span>데이터베이스: <strong>SQLite (node:sqlite Native Engine)</strong></span>
+        <span>아키텍처 패턴: <strong>4-Tier Standalone Architecture</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 빠른 목차 네비게이션 -->
+  <nav class="sticky-nav">
+    <div class="nav-container">
+      <a href="#summary" class="nav-link">📌 개요 & 4계층 아키텍처</a>
+      <a href="#frontend" class="nav-link">🎨 프론트엔드 & 런타임 기술</a>
+      <a href="#backend" class="nav-link">⚙️ 백엔드 & 서버 프레임워크</a>
+      <a href="#database" class="nav-link">💾 데이터베이스 & 스토리지</a>
+      <a href="#integration" class="nav-link">🔌 임베드 & 북마클릿 연동</a>
+      <a href="#evolution" class="nav-link">🚀 nocodeDap vs nocodedapEx 비교</a>
+    </div>
+  </nav>
+
+  <!-- 메인 본문 -->
+  <main class="main-container">
+
+    <!-- 1. 아키텍처 개요 -->
+    <section id="summary" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-blue">🏛️</div>
+        <div>
+          <h2 class="section-title">1. 시스템 전체 아키텍처 (4-Tier Standalone Architecture)</h2>
+          <p class="section-subtitle">외부 클라우드나 무거운 RDBMS 서버 없이 100% 로컬 및 사내 인트라넷에서 자립 구동되는 4계층 분리 구조</p>
+        </div>
+      </div>
+
+      <div class="arch-diagram">
+        <!-- 계층 1 -->
+        <div class="arch-box highlight">
+          <div class="arch-box-title"><span>👑 Tier 1.</span> 독립 운영 관제 포털 (Standalone Admin Console)</div>
+          <div class="arch-box-desc">
+            경로: <code>/admin</code> (admin.html, admin.css)<br>
+            - 사내 다중 시스템(App ID)별 가이드 중앙 제어, KPI 모니터링, 가이드 마스터 테이블, 스텝 상세 조회, 1-Click 임베드 발급 및 북마클릿 제공.
+          </div>
+        </div>
+        <div class="arch-arrow">▼ REST API (/api/admin/stats, /api/tours)</div>
+
+        <!-- 계층 2 -->
+        <div class="arch-box">
+          <div class="arch-box-title"><span>⚡ Tier 2.</span> 백엔드 엔진 & 경량 임베디드 DB (Engine Server)</div>
+          <div class="arch-box-desc">
+            엔진: Node.js (v24), Express 4.19, SQLite Native Database (<code>data/dap.db</code>)<br>
+            - 시스템/URL 복합 인덱스(1ms 내 응답), ACID 트랜잭션 동시성 보장, Express/HTTP 듀얼 폴백 서빙.
+          </div>
+        </div>
+        <div class="arch-arrow">▼ 1줄 SDK 임베드 (&lt;script src=".../runtime.js" data-app-id="..."&gt;)</div>
+
+        <!-- 계층 3 & 4 -->
+        <div class="arch-row">
+          <div class="arch-box">
+            <div class="arch-box-title"><span>🎯 Tier 3.</span> 클라이언트 임베드 런타임</div>
+            <div class="arch-box-desc">
+              파일: <code>runtime.js</code>, <code>runtime.css</code>, Driver.js v1.3<br>
+              - 팝오버 투명도 슬라이더(20%~100%), [👁️ 비침] 투시 버튼, What's New 1회 자동 팝업, 모바일 터치 최적화 헬프 버튼.
+            </div>
+          </div>
+          <div class="arch-box">
+            <div class="arch-box-title"><span>🛠️ Tier 4.</span> 현장 저작 도구 (Authoring Studio)</div>
+            <div class="arch-box-desc">
+              파일: <code>builder.js</code>, <code>builder.css</code>, Live Bookmarklet<br>
+              - 실제 ERP/포털 화면 요소를 직접 클릭하여 인터랙티브 가이드를 만들고 백엔드로 전송하는 제로코드 저작기.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">완전 독립 실행 (Zero-Dependency)</span>
+            <span class="tech-badge badge-emerald">안전성</span>
+          </div>
+          <p class="tech-desc">외부 CDN이나 클라우드 연결 없이 사내 폐쇄망(Intranet)에서도 100% 자체 구동됩니다.</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">초고속 인덱싱 (Sub-millisecond)</span>
+            <span class="tech-badge badge-blue">성능</span>
+          </div>
+          <p class="tech-desc">수만 개의 가이드가 등록되어도 사용자가 현재 머무는 URL의 가이드만 1ms 내로 핀포인트 다운로드합니다.</p>
+        </div>
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">다중 업무 시스템 통합 (Multi-App)</span>
+            <span class="tech-badge badge-purple">확장성</span>
+          </div>
+          <p class="tech-desc">ERP, 그룹웨어, 고객 CRM 등 서로 다른 도메인과 시스템을 하나의 DAP 허브에서 통합 관리합니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 프론트엔드 및 런타임 기술 -->
+    <section id="frontend" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-emerald">🎨</div>
+        <div>
+          <h2 class="section-title">2. 프론트엔드 및 런타임 기술 (Frontend & In-App Runtime)</h2>
+          <p class="section-subtitle">화면 오염 없는 네이티브 자바스크립트 엔진과 사용자 친화적인 인터랙티브 UX</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Driver.js -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">Driver.js (v1.3.1 IIFE)</span>
+            <span class="tech-badge badge-blue">Core Engine</span>
+          </div>
+          <p class="tech-desc">
+            웹 화면 요소에 스포트라이트 조명을 비추고 팝오버를 가이드하는 경량 오픈소스 인터랙티브 투어 엔진입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>SVG Path Masking</strong>: 백그라운드 딤 처리 및 선택된 요소 부드러운 하이라이트</li>
+            <li><strong>반응형 위치 자동 계산</strong>: top, bottom, left, right 위치 및 충돌 회피</li>
+            <li><strong>Lifecycle Hook 제어</strong>: <code>onPopoverRender</code>, <code>onDestroyed</code> 등을 커스텀 확장하여 투명도 컨트롤러 부착</li>
+          </ul>
+        </div>
+
+        <!-- In-App Builder -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">No-Code In-App Builder (builder.js)</span>
+            <span class="tech-badge badge-amber">Authoring</span>
+          </div>
+          <p class="tech-desc">
+            코딩 지식이 없는 기획자/운영자도 화면 위 요소를 직접 마우스로 클릭하여 가이드를 작성하는 현장 저작기입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>스마트 셀렉터 생성기</strong>: 고유 ID, 고유 클래스, 계층 경로를 분석하여 안정적인 CSS 셀렉터 자동 추론</li>
+            <li><strong>플로팅 드래그 툴바</strong>: 작업 중 화면을 가리지 않도록 마우스 드래그로 자유롭게 이동 가능</li>
+            <li><strong>실시간 단계 편집 및 순서 변경</strong>: 추가, 삭제, 위치 변경 후 원클릭 배포</li>
+          </ul>
+        </div>
+
+        <!-- Runtime Player -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">DAP Runtime Player (runtime.js)</span>
+            <span class="tech-badge badge-emerald">User Experience</span>
+          </div>
+          <p class="tech-desc">
+            대상 웹앱에 삽입되어 가이드를 다운로드하고 팝오버를 제어하는 엔드유저용 실행 엔진입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>풍선 도움말 실시간 투명도 슬라이더</strong>: 20%~100% 미세 조절 및 로컬 스토리지 상태 기억</li>
+            <li><strong>[👁️ 비침] 퀵 투시 버튼</strong>: 도움말에 가려진 아래 화면 데이터를 누르는 동안 즉시 투시</li>
+            <li><strong>What's New 1회 자동 팝업</strong>: 신규 배포 시 세련된 카드 모달 자동 노출 후 둘러보기 연계</li>
+            <li><strong>모바일 뷰포트 최적화</strong>: 48px 컴팩트 터치 버튼, 92vw 반응형 팝오버 지원</li>
+          </ul>
+        </div>
+
+        <!-- Standalone Admin UI -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">독립 관리 콘솔 (admin.html, admin.css)</span>
+            <span class="tech-badge badge-purple">Zero-CDN SPA</span>
+          </div>
+          <p class="tech-desc">
+            외부 네트워크 통신이 전혀 없는 100% 독립형 관리자 포털 대시보드입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>Zero-Error 인라인 SVG 파비콘</strong>: 404 없이 번개 아이콘 즉시 렌더링</li>
+            <li><strong>엔터프라이즈 CSS 변수 시스템</strong>: 산세리프 시스템 폰트, 커스텀 스크롤바, 카드 섀도우</li>
+            <li><strong>스텝 인스펙터 (Step Inspector)</strong>: 각 가이드의 스텝별 셀렉터와 팝오버 속성을 카드 형태로 정밀 검사</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 백엔드 및 서버 프레임워크 -->
+    <section id="backend" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-amber">⚙️</div>
+        <div>
+          <h2 class="section-title">3. 백엔드 및 서버 프레임워크 (Backend & Server Engine)</h2>
+          <p class="section-subtitle">Node.js 기반 고성능 비동기 I/O 및 이중화 Fallback 서버 아키텍처</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">Node.js 런타임 (v24.x LTS 호환)</span>
+            <span class="tech-badge badge-emerald">Runtime</span>
+          </div>
+          <p class="tech-desc">
+            비동기 이벤트 기반 논블로킹 I/O 모델로 수많은 사용자의 가이드 조회 요청을 단일 스레드로 효율적으로 처리합니다.
+          </p>
+          <ul class="tech-features">
+            <li>최신 V8 JavaScript 엔진 기반 초고속 파싱</li>
+            <li>기본 내장 모듈 (<code>path</code>, <code>fs</code>, <code>http</code>, <code>url</code>) 활용 극대화</li>
+          </ul>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">Express.js (v4.19.2)</span>
+            <span class="tech-badge badge-blue">REST Framework</span>
+          </div>
+          <p class="tech-desc">
+            엔터프라이즈 RESTful API 엔드포인트와 정적 파일 호스팅을 담당하는 웹 프레임워크입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>CORS 완전 개방</strong>: <code>cors()</code> 미들웨어를 통해 포트가 다른 사내 업무 시스템에서도 자유롭게 스크립트 호출 허용</li>
+            <li><strong>URL & 시스템 필터링 라우팅</strong>: <code>GET /api/tours?url=...&appId=...</code></li>
+            <li><strong>정적 자산 고속 서빙</strong>: <code>runtime.js</code>, <code>builder.js</code>, <code>admin.html</code> 즉시 전달</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 이중화 아키텍처 설명 -->
+      <div style="margin-top: 20px; background: var(--slate-100); border-radius: 12px; padding: 20px;">
+        <h4 style="font-weight: 700; color: var(--slate-900); margin-bottom: 8px;">🛡️ 무중단 듀얼 서버 아키텍처 (Dual Fallback Serving)</h4>
+        <p style="font-size: 0.85rem; color: var(--slate-700); line-height: 1.5;">
+          <code>server.js</code>는 <code>try { const express = require('express'); ... } catch (e) { ... }</code> 구조로 설계되어 있습니다. 신규 서버 배포 시 <code>node_modules</code>가 아직 설치되지 않았거나 Express 로딩에 실패하더라도, Node.js 기본 내장 <code>http.createServer</code>를 통해 <strong>100% 동일한 기능의 REST API 및 정적 서빙으로 즉시 자동 전환(Fallback)</strong>되어 서비스 중단을 원천 차단합니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- 4. 데이터베이스 및 스토리지 -->
+    <section id="database" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-purple">💾</div>
+        <div>
+          <h2 class="section-title">4. 데이터베이스 및 스토리지 (Database & Persistence Engine)</h2>
+          <p class="section-subtitle">ACID 트랜잭션, 복합 인덱스, 파일 기반 내장형 SQLite 3</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">Native node:sqlite (DatabaseSync)</span>
+            <span class="tech-badge badge-emerald">Primary Driver</span>
+          </div>
+          <p class="tech-desc">
+            Node.js 22.5.0 이상에 기본 내장된 공식 C++ 네이티브 SQLite 바인딩 엔진입니다.
+          </p>
+          <ul class="tech-features">
+            <li>외부 바이너리 컴파일(Python/C++ 도구) 없이 노드 자체 엔진만으로 완전 네이티브 SQLite 구동</li>
+            <li>동기식 API(<code>DatabaseSync</code>)로 웹 요청 간 락 없는 순차 트랜잭션 보장</li>
+            <li>Node.js 구버전 환경을 위해 <code>better-sqlite3</code> 드라이버 자동 감지 폴백 레이어 탑재</li>
+          </ul>
+        </div>
+
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">초고속 복합 색인 (Composite Index)</span>
+            <span class="tech-badge badge-purple">Performance</span>
+          </div>
+          <p class="tech-desc">
+            시스템 규모가 확장되어 수백 개 시스템의 수만 개 URL이 등록되어도 지연 없는 인덱싱을 제공합니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>복합 인덱스</strong>: <code>CREATE INDEX idx_tours_app_url ON tours (app_id, target_url);</code></li>
+            <li><strong>타입 인덱스</strong>: <code>CREATE INDEX idx_tours_type ON tours (type);</code></li>
+            <li><strong>데이터 영속성</strong>: <code>data/dap.db</code> 단일 파일로 손쉬운 원클릭 백업 및 이관 지원</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="code-box">
+<span class="comment">-- nocodedapEx 데이터베이스 DDL 구조</span>
+<span class="keyword">CREATE TABLE IF NOT EXISTS</span> <span class="attr">tours</span> (
+  <span class="attr">id</span> <span class="keyword">TEXT PRIMARY KEY</span>,                <span class="comment">-- 투어 고유 식별자</span>
+  <span class="attr">app_id</span> <span class="keyword">TEXT NOT NULL DEFAULT</span> <span class="string">'default'</span>, <span class="comment">-- 대상 시스템 (예: erp, portal, crm)</span>
+  <span class="attr">target_url</span> <span class="keyword">TEXT NOT NULL DEFAULT</span> <span class="string">'/'</span>,  <span class="comment">-- 노출 대상 페이지 경로 (예: /orders)</span>
+  <span class="attr">title</span> <span class="keyword">TEXT NOT NULL</span>,                 <span class="comment">-- 가이드 제목</span>
+  <span class="attr">description</span> <span class="keyword">TEXT</span>,                    <span class="comment">-- 가이드 상세 설명</span>
+  <span class="attr">type</span> <span class="keyword">TEXT DEFAULT</span> <span class="string">'general'</span>,         <span class="comment">-- onboarding, whats-new, page-guide</span>
+  <span class="attr">version</span> <span class="keyword">TEXT DEFAULT</span> <span class="string">'1.0.0'</span>,        <span class="comment">-- 가이드 버전</span>
+  <span class="attr">auto_launch_once</span> <span class="keyword">INTEGER DEFAULT</span> 0,  <span class="comment">-- 첫 접속 시 1회 자동 팝업 플래그</span>
+  <span class="attr">steps_json</span> <span class="keyword">TEXT NOT NULL</span>,            <span class="comment">-- 직렬화된 가이드 단계 배열</span>
+  <span class="attr">created_at</span> <span class="keyword">TEXT</span>, <span class="attr">updated_at</span> <span class="keyword">TEXT</span>
+);
+      </div>
+    </section>
+
+    <!-- 5. 임베드 및 북마클릿 연동 기술 -->
+    <section id="integration" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-blue">🔌</div>
+        <div>
+          <h2 class="section-title">5. 임베드 및 현장 저작 연동 기술 (Integration Architecture)</h2>
+          <p class="section-subtitle">글로벌 상용 DAP(WalkMe, Pendo)와 동일한 2가지 연동 패러다임</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- 임베드 태그 -->
+        <div>
+          <h4 style="font-weight: 700; color: var(--slate-900); margin-bottom: 8px;">1. 단 1줄 클라이언트 런타임 SDK</h4>
+          <p style="font-size: 0.85rem; color: var(--slate-600); margin-bottom: 12px;">
+            안내를 띄우고자 하는 사내 웹사이트의 <code>&lt;head&gt;</code> 또는 <code>&lt;body&gt;</code>에 아래 스크립트를 삽입하면 모든 설정이 완료됩니다.
+          </p>
+          <div class="code-box">
+&lt;<span class="keyword">script</span> 
+  <span class="attr">src</span>=<span class="string">"http://localhost:3050/runtime.js"</span> 
+  <span class="attr">data-app-id</span>=<span class="string">"enterprise-erp"</span> 
+  <span class="attr">defer</span>&gt;
+&lt;/<span class="keyword">script</span>&gt;
+          </div>
+        </div>
+
+        <!-- 북마클릿 -->
+        <div>
+          <h4 style="font-weight: 700; color: var(--slate-900); margin-bottom: 8px;">2. 외부 웹사이트 현장 저작 북마클릿 (Live Bookmarklet)</h4>
+          <p style="font-size: 0.85rem; color: var(--slate-600); margin-bottom: 12px;">
+            브라우저 북마크에 등록해 두고, 가이드를 만들고 싶은 실제 ERP/웹화면에서 클릭하면 화면 위에 현장 저작기가 즉시 주입됩니다.
+          </p>
+          <div class="code-box">
+<span class="keyword">javascript</span>:(<span class="keyword">function</span>(){
+  <span class="attr">window</span>.DAP_SERVER_URL = <span class="string">'http://localhost:3050'</span>;
+  <span class="keyword">const</span> s = <span class="attr">document</span>.createElement(<span class="string">'script'</span>);
+  s.src = <span class="string">'http://localhost:3050/builder.js'</span>;
+  <span class="attr">document</span>.body.appendChild(s);
+})();
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. 기존 nocodeDap vs nocodedapEx 진화 비교 -->
+    <section id="evolution" class="section-card">
+      <div class="section-header">
+        <div class="section-icon badge-purple">🚀</div>
+        <div>
+          <h2 class="section-title">6. 기존 nocodeDap 대비 확장 고도화 내역 (Comparison)</h2>
+          <p class="section-subtitle">단일 파일 기반 프로토타입에서 엔터프라이즈 DAP 허브로의 도약</p>
+        </div>
+      </div>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>비교 항목</th>
+            <th>기존 nocodeDap (보관본)</th>
+            <th>신규 nocodedapEx (확장 엔터프라이즈)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>서비스 기본 포트</strong></td>
+            <td>HTTP 3060 (충돌 방지 설정 완료)</td>
+            <td><strong>HTTP 3050</strong></td>
+          </tr>
+          <tr>
+            <td><strong>데이터 영속 스토리지</strong></td>
+            <td>단일 JSON 파일 (<code>tours.json</code> 전체 읽기/쓰기)</td>
+            <td><strong>SQLite3 고성능 RDBMS</strong> (ACID 트랜잭션, 복합 인덱스)</td>
+          </tr>
+          <tr>
+            <td><strong>다중 시스템(App ID) 관리</strong></td>
+            <td><span class="cell-cross">불가 (단일 앱 고정)</span></td>
+            <td><span class="cell-check">완벽 지원 (ERP, 그룹웨어 등 n개 앱 분기)</span></td>
+          </tr>
+          <tr>
+            <td><strong>URL 기반 핀포인트 쿼리</strong></td>
+            <td><span class="cell-cross">미지원 (전체 데이터 다운로드)</span></td>
+            <td><span class="cell-check">지원 (/api/tours?url=/orders&appId=erp)</span></td>
+          </tr>
+          <tr>
+            <td><strong>독립 운영 관리 포털</strong></td>
+            <td><span class="cell-cross">없음 (샘플 페이지 내 팝업에 종속)</span></td>
+            <td><span class="cell-check"><strong>독립형 관제 포털 (/admin) 탑재</strong></span></td>
+          </tr>
+          <tr>
+            <td><strong>도움말 투명도 & 퀵 비침</strong></td>
+            <td><span class="cell-cross">없음 (불투명 팝오버 고정)</span></td>
+            <td><span class="cell-check"><strong>20%~100% 슬라이더 & [👁️ 비침] 투시 버튼</strong></span></td>
+          </tr>
+          <tr>
+            <td><strong>외부 사이트 현장 저작</strong></td>
+            <td><span class="cell-cross">샘플 대시보드 내부에서만 가능</span></td>
+            <td><span class="cell-check"><strong>원클릭 현장 저작 북마클릿 지원</strong></span></td>
+          </tr>
+          <tr>
+            <td><strong>모바일 반응형 지원</strong></td>
+            <td><span class="cell-cross">데스크톱 전용 UI</span></td>
+            <td><span class="cell-check"><strong>48px 터치 헬프 버튼, 92vw 모달, 드로어</strong></span></td>
+          </tr>
+          <tr>
+            <td><strong>네트워크 독립성</strong></td>
+            <td>외부 CDN에 의존</td>
+            <td><span class="cell-check"><strong>Zero-CDN 순수 로컬 스타일시트(admin.css)</strong></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <!-- 바닥글 -->
+  <footer class="footer">
+    <p>NoCode DAP Extended (nocodedapEx) Architectural Documentation &copy; 2026. All rights reserved.</p>
+    <p style="margin-top: 6px; font-size: 0.8rem; color: #94a3b8;">
+      Designed & Implemented with Google Antigravity 3-Role Orchestration Harness (spec-advisor • worker • diff-verifier • Orchestrator)
+    </p>
+  </footer>
+
+</body>
+</html>
