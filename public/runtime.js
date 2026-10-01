@@ -41,7 +41,6 @@
 
   let toursCache = [];
   let currentDriver = null;
-  let popoverObserver = null;
   let currentPopoverOpacity = parseFloat(localStorage.getItem('tour_popover_opacity') || '1.0');
   if (isNaN(currentPopoverOpacity) || currentPopoverOpacity < 0.2 || currentPopoverOpacity > 1.0) {
     currentPopoverOpacity = 1.0;
@@ -429,10 +428,6 @@
     }
 
     // 이전 투어가 실행 중이면 정리
-    if (popoverObserver) {
-      popoverObserver.disconnect();
-      popoverObserver = null;
-    }
     if (currentDriver && typeof currentDriver.destroy === 'function') {
       try { currentDriver.destroy(); } catch (e) {}
     }
@@ -450,13 +445,6 @@
     });
 
     try {
-      if (typeof MutationObserver !== 'undefined') {
-        popoverObserver = new MutationObserver(() => {
-          attachOpacityControl();
-        });
-        popoverObserver.observe(document.body, { childList: true, subtree: true });
-      }
-
       currentDriver = driverFactory({
         showProgress: true,
         animate: true,
@@ -468,24 +456,10 @@
           attachOpacityControl(popover);
         },
         onHighlightStarted: () => {
-          attachOpacityControl();
-          setTimeout(() => attachOpacityControl(), 0);
+          setTimeout(() => attachOpacityControl(), 50);
         },
-        onDestroyStarted: () => {
-          if (popoverObserver) {
-            popoverObserver.disconnect();
-            popoverObserver = null;
-          }
-          if (currentDriver) {
-            currentDriver.destroy();
-            currentDriver = null;
-          }
-        },
+        onDestroyStarted: () => {},
         onDestroyed: () => {
-          if (popoverObserver) {
-            popoverObserver.disconnect();
-            popoverObserver = null;
-          }
           currentDriver = null;
         }
       });
@@ -508,7 +482,7 @@
     if (wrapper.querySelector('.dap-opacity-panel')) {
       const slider = wrapper.querySelector('.dap-opacity-slider');
       const valLabel = wrapper.querySelector('.dap-opacity-val');
-      if (slider && parseFloat(slider.value) !== currentPopoverOpacity) {
+      if (slider) {
         slider.value = currentPopoverOpacity;
       }
       if (valLabel) {
