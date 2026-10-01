@@ -453,10 +453,11 @@
       <div class="arch-diagram">
         <!-- 계층 1 -->
         <div class="arch-box highlight">
-          <div class="arch-box-title"><span>👑 Tier 1.</span> 독립 운영 관제 포털 (Standalone Admin Console)</div>
+          <div class="arch-box-title"><span>👑 Tier 1.</span> 독립 운영 관제 포털 (Vanilla JS SPA Admin Console)</div>
           <div class="arch-box-desc">
             경로: <code>http://localhost:3050/admin</code> (admin.html, admin.css)<br>
-            - <strong>Zero-CDN 순수 로컬 SPA</strong>: 사내 폐쇄망 100% 호환, 외부 의존성 없음, 번개 SVG 파비콘 (Zero 404)<br>
+            - <strong>Vanilla JS SPA (바닐라 자바스크립트 기반 무프레임워크 SPA)</strong>: React, Vue 등 무거운 외부 프레임워크 종속 없이 순수 브라우저 표준 기술로 구현된 초경량 단일 페이지 애플리케이션.<br>
+            - <strong>Zero-CDN 순수 로컬 스타일링</strong>: 사내 폐쇄망 100% 호환, 외부 의존성 없음, 번개 SVG 파비콘 (Zero 404)<br>
             - <strong>주요 관제 기능</strong>: 연동 시스템(App ID)별 가이드 중앙 제어, KPI 모니터링, 가이드 마스터 테이블, 스텝 상세 조회, 1-Click 임베드 발급 및 북마클릿 제공.
           </div>
         </div>
@@ -536,6 +537,23 @@
       </div>
 
       <div class="grid-2">
+        <!-- Vanilla JS SPA Architecture -->
+        <div class="tech-card">
+          <div class="tech-card-header">
+            <span class="tech-name">Vanilla JS SPA Architecture</span>
+            <span class="tech-badge badge-purple">Zero-Framework SPA</span>
+          </div>
+          <p class="tech-desc">
+            React, Vue, Angular, Svelte, Webpack, Vite 등 일체의 외부 프레임워크나 복잡한 빌드 도구 없이, 순수 브라우저 표준 <strong>Vanilla JavaScript (ES6+)</strong>만으로 상태 관리, 비동기 통신, 라우팅, 컴포넌트 렌더링을 구현한 초경량 단일 페이지 애플리케이션(SPA) 아키텍처입니다.
+          </p>
+          <ul class="tech-features">
+            <li><strong>Zero-Build & Zero-Transpile</strong>: 별도 컴파일/번들링 과정이 없어 저장 즉시 브라우저에서 0초 실행</li>
+            <li><strong>네이티브 브라우저 API 풀 활용</strong>: <code>Fetch API</code>, <code>async/await</code>, <code>DOM API</code>, <code>Event Delegation</code>, <code>CustomEvent</code>, <code>localStorage</code></li>
+            <li><strong>초경량 번들 & 공급망 보안 취약점 제로</strong>: 수 MB에 달하는 라이브러리 번들 오버헤드가 전혀 없고 외부 의존성 해킹 위험 원천 차단</li>
+            <li><strong>단일 인메모리 상태 머신</strong>: <code>state = { tours, stats, selectedApp, searchQuery, origin }</code> 중앙 객체를 통한 단방향 데이터 흐름 및 반응형 렌더링</li>
+          </ul>
+        </div>
+
         <!-- Driver.js -->
         <div class="tech-card">
           <div class="tech-card-header">
@@ -933,6 +951,11 @@
             <td><strong>독립 운영 관리 포털</strong></td>
             <td><span class="cell-cross">없음 (샘플 페이지 내 팝업에 종속)</span></td>
             <td><span class="cell-check"><strong>독립형 관제 포털 (/admin) 탑재</strong></span></td>
+          </tr>
+          <tr>
+            <td><strong>프론트엔드 아키텍처</strong></td>
+            <td>단순 정적 HTML + 스크립트</td>
+            <td><span class="cell-check"><strong>Vanilla JS SPA</strong> (Zero-Framework, 0초 빌드, 단일 상태 머신)</span></td>
           </tr>
           <tr>
             <td><strong>도움말 투명도 & 퀵 비침</strong></td>
