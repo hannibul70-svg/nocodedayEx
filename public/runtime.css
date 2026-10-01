@@ -1,0 +1,518 @@
+/* DAP Runtime Floating Button & Guide Center Modal */
+
+/* 플로팅 헬프 버튼 */
+#dap-help-button {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  border-radius: 50px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#dap-help-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+}
+
+#dap-help-button .help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+/* 모달 오버레이 */
+#dap-runtime-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 9995;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+#dap-runtime-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 가이드 센터 모달 */
+#dap-runtime-modal {
+  width: 90%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(20px) scale(0.97);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#dap-runtime-overlay.active #dap-runtime-modal {
+  transform: translateY(0) scale(1);
+}
+
+.dap-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dap-modal-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dap-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #94a3b8;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.dap-modal-close-btn:hover {
+  color: #334155;
+  background: #f1f5f9;
+}
+
+.dap-modal-body {
+  padding: 20px 24px;
+  max-height: 480px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.dap-modal-footer {
+  padding: 14px 24px;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-reset-history {
+  background-color: #ffffff;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-reset-history:hover {
+  background-color: #f1f5f9;
+  color: #1e293b;
+  border-color: #94a3b8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-reset-history:active {
+  background-color: #e2e8f0;
+  transform: scale(0.98);
+}
+
+.dap-tour-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dap-tour-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.dap-tour-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dap-tour-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.dap-tour-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.dap-tour-desc {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.dap-tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.dap-btn-start {
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s;
+}
+
+.dap-btn-start:hover {
+  background: #1d4ed8;
+}
+
+.dap-btn-delete {
+  background: none;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dap-btn-delete:hover {
+  background: #fee2e2;
+}
+
+.dap-empty-state {
+  text-align: center;
+  padding: 32px 16px;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dap-empty-state-icon {
+  font-size: 2.2rem;
+  margin-bottom: 6px;
+}
+
+/* ========================================================
+   What's New 팝업 모달 & 뱃지 스타일
+   ======================================================== */
+
+/* What's New 팝업 모달 오버레이 */
+#dap-whatsnew-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#dap-whatsnew-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* What's New 모달 카드 */
+.dap-whatsnew-modal {
+  width: 90%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(226, 232, 240, 0.6);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform: translateY(24px) scale(0.96);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#dap-whatsnew-overlay.active .dap-whatsnew-modal {
+  transform: translateY(0) scale(1);
+}
+
+/* What's New 헤더 (보라/인디고 그라데이션) */
+.dap-whatsnew-header {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #9333ea 100%);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dap-whatsnew-badge {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 5px 14px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dap-whatsnew-close-btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  font-size: 1.4rem;
+  color: #ffffff;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  transition: background 0.2s;
+}
+
+.dap-whatsnew-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* What's New 본문 */
+.dap-whatsnew-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 520px;
+  overflow-y: auto;
+}
+
+.dap-whatsnew-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.dap-whatsnew-desc {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* 업데이트 스텝 리스트 미리보기 */
+.dap-whatsnew-steps-preview {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-top: 4px;
+}
+
+.dap-whatsnew-steps-heading {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.dap-whatsnew-step-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dap-whatsnew-step-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.dap-whatsnew-step-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.dap-whatsnew-step-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dap-whatsnew-step-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.dap-whatsnew-step-desc {
+  font-size: 0.82rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+/* 하단 버튼 영역 */
+.dap-whatsnew-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  background: #ffffff;
+}
+
+.dap-whatsnew-btn-dismiss {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dap-whatsnew-btn-dismiss:hover {
+  background: #f8fafc;
+  color: #334155;
+  border-color: #94a3b8;
+}
+
+.dap-whatsnew-btn-start {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dap-whatsnew-btn-start:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(79, 70, 229, 0.45);
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+}
+
+/* 가이드 센터 내 What's New 뱃지 & 카드 강조 */
+.dap-tour-title-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge-whatsnew {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+.dap-tour-card-whatsnew {
+  border-left: 3px solid #8b5cf6;
+  background: linear-gradient(to right, #faf5ff, #ffffff);
+}

@@ -1,0 +1,23 @@
+{
+  "name": "nocodedap-ex",
+  "version": "1.0.0",
+  "description": "No-Code Digital Adoption Platform (DAP) with In-App Guide Authoring and Interactive Runtime",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/sqlite-tours.test.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^11.8.1"
+  },
+  "keywords": [
+    "dap",
+    "onboarding",
+    "nocode",
+    "driverjs"
+  ],
+  "author": "",
+  "license": "ISC"
+}
