@@ -40,7 +40,7 @@
     bindGlobalEvents();
 
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('builder') === 'true') {
+    if (urlParams.get('builder') === 'true' || window.DAP_AUTO_ENABLE_BUILDER === true || !document.getElementById('btn-toggle-builder')) {
       enableBuilder();
     }
   }
@@ -531,12 +531,27 @@
       return;
     }
 
-    // Driver.js로 즉시 시연
+    // Driver.js 런타임이 이미 로드되어 있는 경우 즉시 시연
     if (window.DapRuntime && typeof window.DapRuntime.startTourDirect === 'function') {
       window.DapRuntime.startTourDirect(currentTour);
-    } else {
-      alert('Driver.js 런타임을 찾을 수 없습니다.');
+      return;
     }
+
+    // 런타임이 없는 외부 사이트인 경우 동적으로 runtime.js 로드 후 시연
+    showToast('🚀 미리보기 런타임을 동적으로 불러오는 중...');
+    const script = document.createElement('script');
+    script.src = `${API_BASE}/runtime.js`;
+    script.onload = () => {
+      if (window.DapRuntime && typeof window.DapRuntime.startTourDirect === 'function') {
+        window.DapRuntime.startTourDirect(currentTour);
+      } else {
+        alert('Driver.js 런타임 초기화에 실패했습니다.');
+      }
+    };
+    script.onerror = () => {
+      alert(`DAP 런타임 스크립트를 로드할 수 없습니다: ${API_BASE}/runtime.js`);
+    };
+    document.body.appendChild(script);
   }
 
   /**
@@ -606,5 +621,21 @@
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
   }
+
+  // 외부 사이트 및 북마클릿에서 제어 가능한 전역 인터페이스 노출
+  window.DapBuilder = {
+    enable: enableBuilder,
+    disable: disableBuilder,
+    toggle: function () {
+      if (isBuilderActive) {
+        disableBuilder();
+      } else {
+        enableBuilder();
+      }
+    },
+    isActive: function () {
+      return isBuilderActive;
+    }
+  };
 
 })();

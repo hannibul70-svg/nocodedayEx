@@ -543,8 +543,8 @@
       const embedCode = `<script src="${origin}/runtime.js" data-app-id="${appId}" defer><\/script>`;
       dom.codeEmbedTag.textContent = embedCode;
 
-      // 북마클릿 코드
-      const bookmarkletCode = `javascript:(function(){window.DAP_SERVER_URL='${origin}';const s=document.createElement('script');s.src='${origin}/builder.js';document.body.appendChild(s);})();`;
+      // 북마클릿 코드 (외부 사이트 즉시 활성화, App ID 바인딩, 재클릭 시 토글)
+      const bookmarkletCode = `javascript:(function(){window.DAP_SERVER_URL='${origin}';window.DAP_APP_ID='${appId}';window.DAP_AUTO_ENABLE_BUILDER=true;if(window.DapBuilder){window.DapBuilder.toggle();}else{const s=document.createElement('script');s.src='${origin}/builder.js';document.body.appendChild(s);}})();`;
       dom.linkBookmarklet.setAttribute('href', bookmarkletCode);
     }
 
